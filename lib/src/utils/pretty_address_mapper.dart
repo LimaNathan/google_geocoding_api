@@ -10,10 +10,12 @@ extension PrettyAddressMapperExtension on GoogleGeocodingResult {
     String stateCode = '';
     String streetNumber = '';
     String streetName = '';
+    String neighborhood = '';
     String countryCode = '';
 
     for (final component in addressComponents) {
       final types = component.types;
+
       if (city.isEmpty) {
         if (types.contains('administrative_area_level_2')) {
           city = component.longName;
@@ -27,6 +29,10 @@ extension PrettyAddressMapperExtension on GoogleGeocodingResult {
 
       if (city.isNotEmpty && types.contains('administrative_area_level_2')) {
         city = component.longName;
+      }
+      if (types.contains('sublocality_level_1') ||
+          types.contains('neighborhood')) {
+        neighborhood = component.longName;
       }
       if (types.contains('country')) {
         country = component.longName;
@@ -50,6 +56,7 @@ extension PrettyAddressMapperExtension on GoogleGeocodingResult {
     final location = geometry?.location;
 
     return GeocodingPrettyAddress(
+      
       address: formattedAddress,
       city: city,
       country: country,
