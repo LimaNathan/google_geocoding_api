@@ -15,14 +15,18 @@ extension PrettyAddressMapperExtension on GoogleGeocodingResult {
     for (final component in addressComponents) {
       final types = component.types;
       if (city.isEmpty) {
-        if (types.contains('locality') && types.contains('political')) {
+        if (types.contains('administrative_area_level_2')) {
           city = component.longName;
         } else if (types.contains('sublocality') &&
             types.contains('political')) {
           city = component.longName;
-        } else if (types.contains('administrative_area_level_2')) {
+        } else if (types.contains('locality') && types.contains('political')) {
           city = component.longName;
         }
+      }
+
+      if (city.isNotEmpty && types.contains('administrative_area_level_2')) {
+        city = component.longName;
       }
       if (types.contains('country')) {
         country = component.longName;
